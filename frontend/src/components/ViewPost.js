@@ -101,7 +101,7 @@ render() {
                   <Button color="primary" size="sm"><FaEdit /> Edit</Button>
                 </Link>
                 &nbsp;
-                <DeleteCommentButtonWithPrompt comment={comment} category={post.category} dispatchGetCommentsByPost={()=>this.props.dispatchGetCommentsByPost(post.id)}/>
+                <DeleteCommentButtonWithPrompt comment={comment} post={post} dispatchGetCommentsByPost={()=>this.props.dispatchGetCommentsByPost(post.id)}/>
         </div></ListGroupItemText>
            </ListGroupItem>
 		))
