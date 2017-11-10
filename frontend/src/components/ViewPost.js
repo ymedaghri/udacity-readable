@@ -1,25 +1,27 @@
 import React, { Component } from 'react';
 import Loading from 'react-loading'
-import { Form, Button, FormGroup, Label, Input, Row, Col, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap'
+import { Badge, Form, Button, FormGroup, Label, Input, Row, Col, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
-import { fetchPost } from '../reducers/getPosts'
+import { fetchPost, fetchComments } from '../reducers/PostsReducer'
 import FaEdit from 'react-icons/lib/fa/edit'
 import FaPlus from 'react-icons/lib/fa/plus'
 
 class EditPost extends Component {
   componentDidMount() {
 		const {
-			dispatchGetPostById
+			dispatchGetPostById, dispatchGetCommentsByPost
 		} = this.props
 
 		dispatchGetPostById(this.props.postId)
+    dispatchGetCommentsByPost(this.props.postId)
 	}
-  
+
 render() {
-  	const { post } = this.props
-	const comments = [{id:123, title:'title of comment', body:'content of the comment'}]
-	return (post)?(            
+  	const { post, comments } = this.props
+    const categoryReferer = (this.props.categoryReferer)?this.props.categoryReferer:''
+
+	return (post)?(
           <div>
           <h2>Details of post #{post.id}</h2>
           <hr className="my-2" />
@@ -51,34 +53,34 @@ render() {
           <Input type="text" name="category" id="category" value={post.category} readOnly />
           </FormGroup>
       	</Col>
-      </Row>    
+      </Row>
             <Row>
       	<Col xs="6">
           <FormGroup>
           <Label for="voteScore">Vote Score</Label>
-          <Input type="text" name="voteScore" id="voteScore" value={post.voteScore} readOnly/>          
+          <Input type="text" name="voteScore" id="voteScore" value={post.voteScore} readOnly/>
           </FormGroup>
       </Col>
-		<Col xs="6">      		
+		<Col xs="6">
       	</Col>
       </Row>
       <Row>
-		<Col>     
+		<Col>
       <span className="right">
-<Link to={`/${post.category}`}><Button color="primary">Back</Button></Link> &nbsp;
+          <Link to={`/${categoryReferer}`}><Button color="primary">Back</Button></Link> &nbsp;
 <Link to={`/${post.category}/${post.id}/edit`}><Button color="primary" ><FaEdit /> Edit</Button></Link></span>
       	</Col>
       </Row>
           <hr className="my-2" />
-		</Form>  
+		</Form>
 		<br/>
 
-{  (comments) ? 
+{  (comments) ?
 (
 		<div>
         <h2>Comments ({post.commentCount})</h2>
         <hr className="my-2" />
-		<ListGroup>      
+		<ListGroup>
 		<ListGroupItem action>
 		<span className="right">
 		<Link to={`/${post.category}/${post.id}/new-comment`}>
@@ -86,12 +88,12 @@ render() {
         </Link>
         </span>
 		</ListGroupItem>
-	{       
+	{
       comments.map((comment) => (
            <ListGroupItem key={comment.id}>
-              <ListGroupItemHeading>{comment.title}
+              <ListGroupItemHeading><Badge pill>vote score : {comment.voteScore}</Badge><br/>{comment.title}
               </ListGroupItemHeading>
-              <ListGroupItemText>{comment.body}</ListGroupItemText>
+              <ListGroupItemText>{comment.body}<br/>Author : {comment.author}</ListGroupItemText>
            </ListGroupItem>
 		))
         }
@@ -111,15 +113,20 @@ render() {
 
 const mapStateToProps = state => {
 	return {
-		post: state.getPostsReducer.post
+		post: state.PostsReducer.post,
+    categoryReferer: state.PostsReducer.categoryReferer,
+    comments: state.PostsReducer.comments
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
 		dispatchGetPostById: (postId) => {
-			return fetchPost(dispatch, postId)
-		}
+      return fetchPost(dispatch, postId)
+    },
+    dispatchGetCommentsByPost: (postId) => {
+      return fetchComments(dispatch, postId)
+    }
 	}
 }
 

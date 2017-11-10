@@ -3,18 +3,18 @@ import Loading from 'react-loading'
 import { Form, Button, FormGroup, Label, Input } from 'reactstrap'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
-import { fetchPost, fetchPosts } from '../reducers/getPosts'
+import { fetchPost, fetchPosts } from '../reducers/PostsReducer'
 import { updatePost } from '../services/PostsApi'
 import { Redirect } from 'react-router';
 
 class EditPost extends Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
     }
   }
-  
+
   componentDidMount() {
 		const {
 			dispatchGetPostById
@@ -22,8 +22,8 @@ class EditPost extends Component {
 
 		dispatchGetPostById(this.props.postId)
 	}
-  
-  
+
+
   onChange = (event) => {
         const state = this.state
         state.post[event.target.name] = event.target.value;
@@ -33,25 +33,29 @@ class EditPost extends Component {
 onSubmit = (event) => {
         event.preventDefault()
         // get our form data out of state
-        const { post } = this.state;  
+        const { post } = this.state;
         updatePost(post, this.props.post.id).then((post)=>{
           fetchPosts()
           this.setState({redirect:true})
         })
       }
-  
+
 render() {
-   if(this.state.redirect) {
-       return <Redirect to='/'/>;
-     }
-  
+
+const categoryReferer = (this.props.categoryReferer)?this.props.categoryReferer:''
+
+  if(this.state.redirect) {
+    return  <Redirect to={`/${categoryReferer}`} />
+  }
+
   	const { categories } = this.props
 	const propsPost = this.props.post
+
 
 	if(!this.state.post && propsPost) this.setState({post:propsPost})
 	const { post } = this.state
 
-	return (post&&categories)?(            
+	return (post&&categories)?(
           <div>
           <h2>Details of post #{post.id}</h2>
           <hr className="my-2" />
@@ -59,11 +63,11 @@ render() {
         <FormGroup>
           <Label for="title">Title</Label>
           <Input type="text" name="title" id="title" value={post.title} onChange={this.onChange}/>
-        </FormGroup>          
+        </FormGroup>
         <FormGroup>
           <Label for="body">Body</Label>
           <Input type="textarea" name="body" id="body" value={post.body} onChange={this.onChange} />
-        </FormGroup>          
+        </FormGroup>
         <FormGroup>
           <Label for="author">Author</Label>
           <Input type="text" name="author" id="author" value={post.author} onChange={this.onChange}/>
@@ -76,7 +80,7 @@ render() {
           (
           <option key={category.name}>{category.name}</option>
           ))
-          }           
+          }
           </Input>
           </FormGroup>
 		  <FormGroup>
@@ -91,8 +95,11 @@ render() {
           </Input>
           </FormGroup>
           <span className="right">
-<Link to={`/${this.props.categoryName}`}><Button color="primary">Back</Button></Link>&nbsp;<Button color="primary">Save</Button></span>
-		</Form>      
+          <Link to={`/${categoryReferer}`}>
+          <Button color="primary">Back</Button>
+          </Link>&nbsp;
+          <Button color="primary">Save</Button></span>
+          </Form>
       </div>
   ):(<div><Loading delay={200} type='spin' color='#222' className='loading' /></div>
         )
@@ -102,14 +109,15 @@ render() {
 
 const mapStateToProps = state => {
 	return {
-		post: state.getPostsReducer.post
+		post: state.PostsReducer.post,
+    categoryReferer: state.PostsReducer.categoryReferer
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
 		dispatchGetPostById: (postId) => {
-			return fetchPost(dispatch, postId)
+			fetchPost(dispatch, postId)
 		}
 	}
 }

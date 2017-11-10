@@ -8,7 +8,7 @@ import Posts from './Posts'
 import EditPost from './EditPost'
 import ViewPost from './ViewPost'
 import NewComment from './NewComment'
-//import Loading from 'react-loading'
+import NewPost from './NewPost'
 
 class Main extends Component {
   componentDidMount() {
@@ -22,7 +22,7 @@ class Main extends Component {
   {
     const {
 			categories
-		} = this.props;    
+		} = this.props;
     return (
       		<Container>
             <Jumbotron>
@@ -35,7 +35,7 @@ class Main extends Component {
             	<Route exact path="/:categoryName" render={(props)=>(<div>
                                                                      <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
                                                                      <br/>
-                                                                     <Posts categoryName={props.match.params.categoryName}/>
+                                                                     <Posts categoryName={props.match.params.categoryName} />
                                                                      </div> )} />
 			      <Route exact path="/:categoryName/:postId/edit" render={(props)=>(<div>
                                                                                     <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
@@ -49,11 +49,18 @@ class Main extends Component {
       					<ViewPost postId={props.match.params.postId} categories={categories} />
       				</div> )} />
       				<Route exact path="/:categoryName/:postId/new-comment" render={(props)=>(
-      				<div>
-      					<NewComment />
-      				</div> )} />
+              <div>
+                <NewComment postId={props.match.params.postId}/>
+              </div> )} />
+              <Route exact path="/:categoryName/:postId/new-post" render={(props)=>(
+              <div>
+                <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
+                <br/>
+                <NewPost categories={categories}/>
+              </div>
+              )} />
 
-			</Switch> 
+			</Switch>
             </Jumbotron>
 			</Container>
            )
@@ -63,7 +70,7 @@ class Main extends Component {
 
 const mapStateToProps = state => {
 	return {
-		categories: state.getCategoriesReducer.categories
+		categories: state.CategoriesReducer.categories
 	}
 }
 

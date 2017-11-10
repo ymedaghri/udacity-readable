@@ -1,7 +1,7 @@
 import * as CategoriesApi from '../services/CategoriesApi'
 import { LOAD_CATEGORIES } from '../actions'
 
-export const getCategoriesReducer = (state={}, action) => {  
+export const CategoriesReducer = (state={}, action) => {
 	const { categories } = action
   switch (action.type) {
       case LOAD_CATEGORIES :

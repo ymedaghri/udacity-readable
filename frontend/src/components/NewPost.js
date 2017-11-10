@@ -1,64 +1,67 @@
-import React, { Component } from 'react';
-import FaArrowLeft from 'react-icons/lib/fa/arrow-left'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import { Jumbotron, Form, Button, FormGroup, Label, Input } from 'reactstrap'
+import { Form, Button, FormGroup, Label, Input } from 'reactstrap'
 import { newPost } from '../services/PostsApi'
-import { Redirect } from 'react-router';
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router'
 
 class NewPost extends Component {
   constructor(props) {
-    super(props);
-    
+    super(props)
+
     this.state = {
       		post:
             {
                 title: '',
                 body: '',
                 author: '',
-	            category:'react',
+	              category:'react',
                 voteScore:'1'
             }
     }
   }
-   
-  
+
+
   onChange = (event) => {
         const state = this.state
-        state.post[event.target.name] = event.target.value;
-        this.setState(state);
+        state.post[event.target.name] = event.target.value
+        this.setState(state)
       }
 
 onSubmit = (event) => {
-        event.preventDefault();
+        event.preventDefault()
         // get our form data out of state
-        const { post } = this.state;  
-  
+        const { post } = this.state
+
   		post['timestamp']=Date.now()
   		post['id']=Date.now()
         newPost(post).then((post)=>this.setState({redirect:true}))
       }
 
 render() {
-  if(this.state.redirect) {
-       return <Redirect to='/'/>;
+
+    const categoryReferer = (this.props.categoryReferer)?this.props.categoryReferer:''
+
+    if(this.state.redirect) {
+      return  <Redirect to={`/${categoryReferer}`} />
      }
+
   	const { categories} = this.props
     const { title, body, author, category, voteScore } = this.state.post
 
     	return (
-          <Jumbotron > 
-          <span className="right"><Link to='/'><Button color="primary" ><FaArrowLeft /> Back</Button></Link></span>
-          <h2>New post</h2>   
+          <div >
+          <h2>New post</h2>
           <hr className="my-2" />
           <Form onSubmit={this.onSubmit}>
         <FormGroup>
           <Label for="title">Title</Label>
           <Input type="text" name="title" id="title" value={title} onChange={this.onChange}/>
-        </FormGroup>          
+        </FormGroup>
         <FormGroup>
           <Label for="body">Body</Label>
           <Input type="textarea" name="body" id="body" value={body} onChange={this.onChange} />
-        </FormGroup>          
+        </FormGroup>
         <FormGroup>
           <Label for="author">Author</Label>
           <Input type="text" name="author" id="author" value={author} onChange={this.onChange}/>
@@ -71,7 +74,7 @@ render() {
           (
           <option key={category.name}>{category.name}</option>
           ))
-          }           
+          }
           </Input>
           </FormGroup>
 <FormGroup>
@@ -85,11 +88,21 @@ render() {
           <option>6</option>
           </Input>
           </FormGroup>
-          <span className="right"><Button color="primary">Save</Button></span>
+          <span className="right">
+          <Link to={`/${categoryReferer}`}>
+          <Button color="primary">Back</Button>
+          </Link>&nbsp;
+          <Button color="primary">Save</Button></span>
 		</Form>
-</Jumbotron>                
+</div>
   )
 }
 }
 
-export default NewPost
+const mapStateToProps = state => {
+  return {
+    categoryReferer: state.PostsReducer.categoryReferer
+  }
+}
+
+export default connect(mapStateToProps)(NewPost)

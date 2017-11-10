@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Badge, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap'
-import { fetchPosts, sortPostsByVoteAction, sortPostsByTimestampAction } from '../reducers/getPosts'
+import { fetchPosts, sortPostsByVoteAction, sortPostsByTimestampAction, storeCategoryReferer } from '../reducers/PostsReducer'
 import { connect } from 'react-redux';
 import { upVote } from '../services/PostsApi'
 import { downVote } from '../services/PostsApi'
@@ -21,67 +21,77 @@ class Posts extends Component {
 
 		dispatchGetPosts(this.props.categoryName);
 	}
-  
+
 render() {
-  	const {sortPostsByVote, sortPostsByTimestamp} = this.props
+  	const {sortPostsByVote, sortPostsByTimestamp, dispatchStoreCategoryReferer} = this.props
     const posts = (sortPostsByVote===true)?sortByVote(this.props.posts):(sortPostsByTimestamp===true)?sortByTimestamp(this.props.posts):this.props.posts
-    
+
     return (<div>
             <h2>Posts</h2>
-			<hr className="my-2" />  
+			<hr className="my-2" />
             <ListGroup>
 		<ListGroupItem action>
 			<Button color={(sortPostsByVote===true)?'warning':'primary'} size="sm" onClick={this.props.dispatchSortPostsByVote}>Sort By Vote</Button>&nbsp;<Button color={(sortPostsByTimestamp===true)?'warning':'primary'} size="sm" onClick={this.props.dispatchSortPostsByTimestamp}>Sort By Timestamp</Button>
 <span className="right">
-<Link to={`/${this.props.categoryName}/${Date.now()}/new`}>
+<Link to={`/${this.props.categoryName}/${Date.now()}/new-post`}>
 <Button color="success" size="sm">Add a new Post <FaPlus/></Button>
 </Link>
 </span>
 		</ListGroupItem>
-          
-	{       
+
+	{
       (posts)?(posts.filter((post)=>post.deleted===false).map((post) => (
            <ListGroupItem key={post.id}>
               <ListGroupItemHeading>
 			  	<Badge pill>vote score : {post.voteScore}</Badge> <Badge pill><a href="#" className="white"><FaPlus onClick={()=>upVote(post.id).then((updatedPost)=>{post.voteScore=updatedPost.voteScore; this.setState(post)})}/></a></Badge> <Badge pill><a href="#" className="white"><FaMinus onClick={()=>downVote(post.id).then((updatedPost)=>{post.voteScore=updatedPost.voteScore; this.setState(post)})}/></a></Badge>
 				<span className="right"><Badge pill>Comments : {post.commentCount}</Badge></span>
 				<br/><br/>
-				{post.title}   
+				{post.title}
               </ListGroupItemHeading>
               <ListGroupItemText>{post.body} ({post.category})
 				<br/>Author : {post.author}
 				<div className="right">
-                &nbsp;<Link to={`/${post.category}/${post.id}/edit`}><Button color="primary" size="sm"><FaEdit /> Edit</Button></Link>&nbsp;<Link key={post.id} to={`/${post.category}/${post.id}/view`}><Button color="primary" size="sm"><FaView /> View</Button></Link>
-&nbsp;
-<DeleteButtonWithPrompt post={post} category={post.category} categoryName={this.props.categoryName} dispatchGetPosts={()=>this.props.dispatchGetPosts(this.props.categoryName)}/>
+                &nbsp;
+                <Link to={`/${post.category}/${post.id}/edit`} onClick={()=>dispatchStoreCategoryReferer(this.props.categoryName)} >
+                	<Button color="primary" size="sm"><FaEdit /> Edit</Button>
+                </Link>
+                &nbsp;
+                <Link key={post.id} to={`/${post.category}/${post.id}/view`}  onClick={()=>dispatchStoreCategoryReferer(this.props.categoryName)}>
+                	<Button color="primary" size="sm"><FaView /> View</Button>
+                </Link>&nbsp;
+                <DeleteButtonWithPrompt post={post} category={post.category} categoryName={this.props.categoryName} dispatchGetPosts={()=>this.props.dispatchGetPosts(this.props.categoryName)}/>
 				</div>
 			</ListGroupItemText>
            </ListGroupItem>
 		))):(<Loading delay={0} type='spin' color='#222' className='loading' />)
         }
       </ListGroup>
-		</div>)   
+		</div>)
 }
 }
 const mapStateToProps = state => {
 	return {
-		sortPostsByVote:state.getPostsReducer.sortPostsByVote,
-		sortPostsByTimestamp:state.getPostsReducer.sortPostsByTimestamp,
-		posts: state.getPostsReducer.posts
+		sortPostsByVote:state.PostsReducer.sortPostsByVote,
+		sortPostsByTimestamp:state.PostsReducer.sortPostsByTimestamp,
+		posts: state.PostsReducer.posts
 	}
 }
 
 const mapDispatchToProps = dispatch => {
 	return {
 		dispatchGetPosts: (category) => {
-			return fetchPosts(dispatch, category)
+			fetchPosts(dispatch, category)
 		},
 		dispatchSortPostsByVote: () => {
-			return dispatch(sortPostsByVoteAction())
+			dispatch(sortPostsByVoteAction())
 		},
 		dispatchSortPostsByTimestamp: () => {
-			return dispatch(sortPostsByTimestampAction())
+			dispatch(sortPostsByTimestampAction())
+		},
+		dispatchStoreCategoryReferer: (categoryName) => {
+			dispatch(storeCategoryReferer(categoryName))
 		}
+
 	}
 }
 
