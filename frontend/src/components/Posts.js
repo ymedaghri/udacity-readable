@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Button, Badge, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap'
-import { fetchPosts, sortPostsByVoteAction, sortPostsByTimestampAction, storeCategoryReferer } from '../reducers/PostsReducer'
+import { fetchPosts, sortPostsByVoteAction, sortPostsByTimestampAction } from '../reducers/PostsReducer'
 import { connect } from 'react-redux';
 import { upVote } from '../services/PostsApi'
 import { downVote } from '../services/PostsApi'
@@ -9,7 +9,7 @@ import FaPlus from 'react-icons/lib/fa/plus'
 import FaEdit from 'react-icons/lib/fa/edit'
 import FaView from 'react-icons/lib/fa/eye'
 import FaMinus from 'react-icons/lib/fa/minus'
-import DeleteButtonWithPrompt from './DeleteButtonWithPrompt'
+import DeletePostButtonWithPrompt from './DeletePostButtonWithPrompt'
 import Loading from 'react-loading'
 
 class Posts extends Component {
@@ -23,7 +23,7 @@ class Posts extends Component {
 	}
 
 render() {
-  	const {sortPostsByVote, sortPostsByTimestamp, dispatchStoreCategoryReferer} = this.props
+  	const {sortPostsByVote, sortPostsByTimestamp} = this.props
     const posts = (sortPostsByVote===true)?sortByVote(this.props.posts):(sortPostsByTimestamp===true)?sortByTimestamp(this.props.posts):this.props.posts
 
     return (<div>
@@ -52,14 +52,14 @@ render() {
 				<br/>Author : {post.author}
 				<div className="right">
                 &nbsp;
-                <Link to={`/${post.category}/${post.id}/edit`} onClick={()=>dispatchStoreCategoryReferer(this.props.categoryName)} >
+                <Link to={`/${post.category}/${post.id}/edit`} >
                 	<Button color="primary" size="sm"><FaEdit /> Edit</Button>
                 </Link>
                 &nbsp;
-                <Link key={post.id} to={`/${post.category}/${post.id}/view`}  onClick={()=>dispatchStoreCategoryReferer(this.props.categoryName)}>
+                <Link key={post.id} to={`/${post.category}/${post.id}/view`} >
                 	<Button color="primary" size="sm"><FaView /> View</Button>
                 </Link>&nbsp;
-                <DeleteButtonWithPrompt post={post} category={post.category} categoryName={this.props.categoryName} dispatchGetPosts={()=>this.props.dispatchGetPosts(this.props.categoryName)}/>
+                <DeletePostButtonWithPrompt post={post} category={post.category} categoryName={this.props.categoryName} dispatchGetPosts={()=>this.props.dispatchGetPosts(this.props.categoryName)}/>
 				</div>
 			</ListGroupItemText>
            </ListGroupItem>
@@ -87,9 +87,6 @@ const mapDispatchToProps = dispatch => {
 		},
 		dispatchSortPostsByTimestamp: () => {
 			dispatch(sortPostsByTimestampAction())
-		},
-		dispatchStoreCategoryReferer: (categoryName) => {
-			dispatch(storeCategoryReferer(categoryName))
 		}
 
 	}

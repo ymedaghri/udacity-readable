@@ -5,17 +5,31 @@ export const getComments = (postId) =>
       .then(res => res.json())
       .then(data=>data)
 
-export const newComment = (comment) => 
+export const newComment = (comment) =>
   {
-    
+
   return fetch(`${Backend.url}/comments`, {
     method: 'POST',
     headers:{
       ...Backend.tokens.headers,
     	'Content-Type': 'application/json'
-    }, 
+    },
     credentials:'include',
     body: JSON.stringify( comment )
   }).then(res => res.json())
-  
+
+}
+
+export const deleteComment = (id) =>
+  {
+
+  return fetch(`${Backend.url}/comments/${id}`, {
+    method: 'DELETE',
+    headers:{
+      ...Backend.tokens.headers,
+      'Content-Type': 'application/json'
+    },
+    credentials:'include'
+  }).then(res => res)
+
 }

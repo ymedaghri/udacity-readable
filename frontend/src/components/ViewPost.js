@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import { fetchPost, fetchComments } from '../reducers/PostsReducer'
 import FaEdit from 'react-icons/lib/fa/edit'
 import FaPlus from 'react-icons/lib/fa/plus'
+import DeleteCommentButtonWithPrompt from './DeleteCommentButtonWithPrompt'
 
 class EditPost extends Component {
   componentDidMount() {
@@ -93,7 +94,15 @@ render() {
            <ListGroupItem key={comment.id}>
               <ListGroupItemHeading><Badge pill>vote score : {comment.voteScore}</Badge><br/>{comment.title}
               </ListGroupItemHeading>
-              <ListGroupItemText>{comment.body}<br/>Author : {comment.author}</ListGroupItemText>
+              <ListGroupItemText>{comment.body}<br/>Author : {comment.author}
+              <div className="right">
+                &nbsp;
+                <Link to={`/${post.category}/${post.id}/${comment.id}/edit`} >
+                  <Button color="primary" size="sm"><FaEdit /> Edit</Button>
+                </Link>
+                &nbsp;
+                <DeleteCommentButtonWithPrompt comment={comment} category={post.category} dispatchGetCommentsByPost={()=>this.props.dispatchGetCommentsByPost(post.id)}/>
+        </div></ListGroupItemText>
            </ListGroupItem>
 		))
         }
