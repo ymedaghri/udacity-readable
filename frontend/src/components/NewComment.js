@@ -14,15 +14,11 @@ class NewComment extends Component {
     this.state = {
       		comment:
             {
-                id:'',
-                body: '',
-                author: '',
-                timestamp:'',
-                parentId:'',
-                voteScore:'',
-                deleted:false,
-                parentDeleted:false
-
+                "id":'',
+                "body": '',
+                "author": '',
+                "timestamp":'',
+                "parentId":''
             }
     }
   }
