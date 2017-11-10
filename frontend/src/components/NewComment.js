@@ -29,7 +29,7 @@ class NewComment extends Component {
 
   componentDidMount() {
     const {
-      dispatchGetPostById
+      dispatchGetPostById, dispatchGetCommentsByPost
     } = this.props
 
     dispatchGetPostById(this.props.postId)
