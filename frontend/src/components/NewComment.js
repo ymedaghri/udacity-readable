@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Form, Button, FormGroup, Label, Input } from 'reactstrap'
 import { newComment } from '../services/CommentsApi'
 import { Redirect } from 'react-router';
-import { fetchPost } from '../reducers/PostsReducer'
+import { fetchPost, fetchComments } from '../reducers/PostsReducer'
 import { connect } from 'react-redux';
 
 class NewComment extends Component {
@@ -33,6 +33,7 @@ class NewComment extends Component {
     } = this.props
 
     dispatchGetPostById(this.props.postId)
+    dispatchGetCommentsByPost(this.props.postId)
   }
 
   onChange = (event) => {
@@ -94,8 +95,12 @@ const mapDispatchToProps = dispatch => {
   return {
     dispatchGetPostById: (postId) => {
       fetchPost(dispatch, postId)
+    },
+    dispatchGetCommentsByPost: (postId) => {
+      return fetchComments(dispatch, postId)
     }
   }
 }
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(NewComment);
