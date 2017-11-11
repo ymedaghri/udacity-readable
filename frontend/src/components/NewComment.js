@@ -8,60 +8,59 @@ import { fetchPost, fetchComments } from '../reducers/PostsReducer'
 import { connect } from 'react-redux';
 
 class NewComment extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      		comment:
-            {
-                "id":'',
+        this.state = {
+            comment: {
+                "id": '',
                 "body": '',
                 "author": '',
-                "timestamp":'',
-                "parentId":''
+                "timestamp": '',
+                "parentId": ''
             }
+        }
     }
-  }
 
-  componentDidMount() {
-    const {
-      dispatchGetPostById, dispatchGetCommentsByPost
-    } = this.props
+    componentDidMount() {
+        const {dispatchGetPostById, dispatchGetCommentsByPost} = this.props
 
-    dispatchGetPostById(this.props.postId)
-    dispatchGetCommentsByPost(this.props.postId)
-  }
+        dispatchGetPostById(this.props.postId)
+        dispatchGetCommentsByPost(this.props.postId)
+    }
 
-  onChange = (event) => {
+    onChange = (event) => {
         const state = this.state
         state.comment[event.target.name] = event.target.value;
         this.setState(state);
-      }
+    }
 
-onSubmit = (event) => {
+    onSubmit = (event) => {
         event.preventDefault();
         // get our form data out of state
-        const { comment } = this.state;
+        const {comment} = this.state;
 
-  		comment['timestamp']=Date.now()
-  		comment['id']=''+Date.now()
-		comment['parentId']=''+this.props.post.id
-        newComment(comment).then((comment)=>this.setState({redirect:true}))
-      }
+        comment['timestamp'] = Date.now()
+        comment['id'] = '' + Date.now()
+        comment['parentId'] = '' + this.props.post.id
+        newComment(comment).then((comment) => this.setState({
+            redirect: true
+        }))
+    }
 
-render() {
-  if(this.state.redirect) {
-       return <Redirect to={`/${this.props.post.category}/${this.props.post.id}/view`}/>
-     }
-  	const { post } = this.props
-    const { body, author } = this.state.comment
+    render() {
+        if (this.state.redirect) {
+            return <Redirect to={`/${this.props.post.category}/${this.props.post.id}/view`}/>
+        }
+        const {post} = this.props
+        const {body, author} = this.state.comment
 
- if(!post) {
-       return <Redirect to='/'/>;
-     }
-    	return (
-          <div>
-			<h2>New comment for post {post.title}</h2>
+        if (!post) {
+            return <Redirect to='/'/>;
+        }
+        return (
+            <div>
+      <h2>New comment for post {post.title}</h2>
           <hr className="my-2" />
           <Form onSubmit={this.onSubmit}>
         <FormGroup>
@@ -73,29 +72,29 @@ render() {
           <Input type="text" name="author" id="author" value={author} onChange={this.onChange}/>
         </FormGroup>
         <span className="right"><Link to={`/${this.props.post.category}/${this.props.post.id}/view`}><Button color="primary"><FaArrowLeft /> Back</Button></Link>
-        &nbsp;
+         
         <Button color="primary">Save</Button></span>
-		</Form>
+    </Form>
        </div>
-  )
-}
+        )
+    }
 }
 
 const mapStateToProps = state => {
-  return {
-    post: state.PostsReducer.post
-  }
+    return {
+        post: state.PostsReducer.post
+    }
 }
 
 const mapDispatchToProps = dispatch => {
-  return {
-    dispatchGetPostById: (postId) => {
-      fetchPost(dispatch, postId)
-    },
-    dispatchGetCommentsByPost: (postId) => {
-      return fetchComments(dispatch, postId)
+    return {
+        dispatchGetPostById: (postId) => {
+            fetchPost(dispatch, postId)
+        },
+        dispatchGetCommentsByPost: (postId) => {
+            return fetchComments(dispatch, postId)
+        }
     }
-  }
 }
 
 

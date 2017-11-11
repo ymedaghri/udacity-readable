@@ -9,77 +9,91 @@ import EditPost from './EditPost'
 import ViewPost from './ViewPost'
 import NewComment from './NewComment'
 import NewPost from './NewPost'
+import EditComment from './EditComment'
+
 
 class Main extends Component {
-  componentDidMount() {
-		const {
-			dispatchGetCategories
-		} = this.props;
+    componentDidMount() {
+        const {dispatchGetCategories} = this.props;
 
-		dispatchGetCategories()
-	}
-  render()
-  {
-    const {
-			categories
-		} = this.props;
-    return (
-      		<Container>
+        dispatchGetCategories()
+    }
+    render() {
+        const {categories} = this.props;
+        return (
+            <Container>
             <Jumbotron>
-            <Switch>
-			    <Route exact path="/" render={(props)=>(<div>
-                                                        <CategoryBanner categories={categories} />
-                                                        <br/>
-                                                        <Posts />
-                                                        </div>)} />
-            	<Route exact path="/:categoryName" render={(props)=>(<div>
-                                                                     <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
-                                                                     <br/>
-                                                                     <Posts categoryName={props.match.params.categoryName} />
-                                                                     </div> )} />
-			      <Route exact path="/:categoryName/:postId/edit" render={(props)=>(<div>
-                                                                                    <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
-                                                                                    <br/>
-                                                                                    <EditPost postId={props.match.params.postId} categories={categories} />
-                                                                                    </div> )} />
-			      <Route exact path="/:categoryName/:postId/view" render={(props)=>(
-      				<div>
-      					<CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
-      					<br/>
-      					<ViewPost postId={props.match.params.postId} categories={categories} />
-      				</div> )} />
-      				<Route exact path="/:categoryName/:postId/new-comment" render={(props)=>(
-              <div>
-                <NewComment postId={props.match.params.postId}/>
-              </div> )} />
-              <Route exact path="/:categoryName/:postId/new-post" render={(props)=>(
-              <div>
-                <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
-                <br/>
-                <NewPost categories={categories}/>
-              </div>
-              )} />
 
-			</Switch>
-            </Jumbotron>
-			</Container>
-           )
-  }
+            <Switch>
+
+              <Route exact path="/" render={(props) => (
+                <div>
+                  <CategoryBanner categories={categories} />
+                  <br/>
+                  <Posts />
+                </div> )} />
+
+              <Route exact path="/:categoryName" render={(props) => (
+                <div>
+                  <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
+                  <br/>
+                  <Posts categoryName={props.match.params.categoryName} />
+                </div> )} />
+
+              <Route exact path="/:categoryName/:postId/edit" render={(props) => (
+                <div>
+                  <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
+                  <br/>
+                  <EditPost postId={props.match.params.postId} categories={categories} />
+                </div> )} />
+
+              <Route exact path="/:categoryName/:postId/view" render={(props) => (
+                <div>
+                  <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
+                  <br/>
+                  <ViewPost postId={props.match.params.postId} categories={categories} />
+                </div> )} />
+
+              <Route exact path="/:categoryName/:postId/new-comment" render={(props) => (
+                <div>
+                  <NewComment postId={props.match.params.postId}/>
+                </div> )} />
+
+              <Route exact path="/:categoryName/:postId/new-post" render={(props) => (
+                <div>
+                  <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
+                  <br/>
+                  <NewPost categories={categories}/>
+                </div>)} />
+
+              <Route exact path="/:categoryName/:postId/:commentId/edit" render={(props) => (
+                <div>
+                  <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
+                  <br/>
+                  <EditComment commentId={props.match.params.commentId} postId={props.match.params.postId} categories={categories} />
+                </div> )} />
+
+            </Switch>
+          </Jumbotron>
+      </Container>
+
+        )
+    }
 }
 
 
 const mapStateToProps = state => {
-	return {
-		categories: state.CategoriesReducer.categories
-	}
+    return {
+        categories: state.CategoriesReducer.categories
+    }
 }
 
 const mapDispatchToProps = dispatch => {
-	return {
-		dispatchGetCategories: () => {
-			fetchCategories(dispatch)
-		}
-	}
+    return {
+        dispatchGetCategories: () => {
+            fetchCategories(dispatch)
+        }
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

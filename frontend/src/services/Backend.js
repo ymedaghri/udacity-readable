@@ -3,7 +3,7 @@ const headers = {
   'Accept': 'application/json',
   'Authorization': token
 }
-const credentials = 'include'
+const credentials = ''//'include'
 
 export const tokens = { headers, credentials }
-export const url = process.env.REACT_APP_BACKEND
+export const url = 'http://localhost:3001'

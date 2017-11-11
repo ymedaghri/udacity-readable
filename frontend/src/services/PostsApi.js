@@ -10,6 +10,12 @@ export const getPostById = (id) =>
       .then(res => res.json())
       .then(data=>data)
 
+export const getCommentById = (id) =>
+  fetch(`${Backend.url}/comments/${id}`, Backend.tokens)
+      .then(res => res.json())
+      .then(data=>data)
+
+
 export const getAllPosts = () =>
 	fetch(`${Backend.url}/posts`, Backend.tokens)
       .then(res => res.json())
@@ -44,8 +50,7 @@ export const updatePost = (post, postId) =>
 
 export const upVote = (postId) =>
   {
-    console.log(postId)
-  	return fetch(`${Backend.url}/posts/${postId}`, {
+    return fetch(`${Backend.url}/posts/${postId}`, {
     method: 'POST',
     headers:{
       ...Backend.tokens.headers,
@@ -58,8 +63,7 @@ export const upVote = (postId) =>
 
 export const downVote = (postId) =>
   {
-    console.log(postId)
-  	return fetch(`${Backend.url}/posts/${postId}`, {
+    return fetch(`${Backend.url}/posts/${postId}`, {
     method: 'POST',
     headers:{
       ...Backend.tokens.headers,
@@ -69,6 +73,33 @@ export const downVote = (postId) =>
     body: JSON.stringify( {option:'downVote'} )
   }).then(res => res.json())
 }
+
+export const upVoteComment = (commentId) =>
+  {
+    return fetch(`${Backend.url}/comments/${commentId}`, {
+    method: 'POST',
+    headers:{
+      ...Backend.tokens.headers,
+      'Content-Type': 'application/json'
+    },
+    credentials:'include',
+    body: JSON.stringify( {option:'upVote'} )
+  }).then(res => res.json())
+}
+
+export const downVoteComment = (commentId) =>
+  {
+    return fetch(`${Backend.url}/comments/${commentId}`, {
+    method: 'POST',
+    headers:{
+      ...Backend.tokens.headers,
+      'Content-Type': 'application/json'
+    },
+    credentials:'include',
+    body: JSON.stringify( {option:'downVote'} )
+  }).then(res => res.json())
+}
+
 
 export const deletePost = (id) =>
   {

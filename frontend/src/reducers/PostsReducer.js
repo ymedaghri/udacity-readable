@@ -1,12 +1,12 @@
 import * as PostsApi from '../services/PostsApi'
 import * as CommentsApi from '../services/CommentsApi'
 
-import { LOAD_POSTS, SORT_POSTS_BY_VOTE, SORT_POSTS_BY_TIMESTAMP, LOAD_POSTS_BY_ID, STORE_CATEGORY_REFERER, LOAD_COMMENTS_BY_POSTS_ID } from '../actions'
+import { LOAD_POSTS, SORT_POSTS_BY_VOTE, SORT_POSTS_BY_TIMESTAMP, LOAD_POST_BY_ID, LOAD_COMMENT_BY_ID, STORE_CATEGORY_REFERER, LOAD_COMMENTS_BY_POSTS_ID } from '../actions'
 
 /* TODO : sortByVote */
 
 export const PostsReducer = (state={sortPostsByVote:false, sortPostsByTimestamp:false}, action) => {
-	const { posts, post, categoryReferer, comments } = action
+	const { posts, post, categoryReferer, comments, comment } = action
   switch (action.type) {
     case LOAD_POSTS :
       return {...state,posts}
@@ -14,8 +14,10 @@ export const PostsReducer = (state={sortPostsByVote:false, sortPostsByTimestamp:
       return {...state,sortPostsByVote:!state.sortPostsByVote,sortPostsByTimestamp:false}
     case SORT_POSTS_BY_TIMESTAMP:
       return {...state,sortPostsByTimestamp:!state.sortPostsByTimestamp,sortPostsByVote:false}
-    case LOAD_POSTS_BY_ID:
+    case LOAD_POST_BY_ID:
       return {...state,post}
+    case LOAD_COMMENT_BY_ID:
+      return {...state,comment}
     case STORE_CATEGORY_REFERER:
       return {...state, categoryReferer}
     case LOAD_COMMENTS_BY_POSTS_ID:
@@ -48,10 +50,19 @@ export const storeCategoryReferer = (categoryReferer) => {
 
 export const loadPostByIdAction = (post) => {
   return {
-    type: LOAD_POSTS_BY_ID,
+    type: LOAD_POST_BY_ID,
     post
   }
 }
+
+export const loadCommentByIdAction = (comment) => {
+  return {
+    type: LOAD_COMMENT_BY_ID,
+    comment
+  }
+}
+
+
 
 export const fetchPosts = (dispatch, category) => ((category)?PostsApi.getPostsByCategory(category):PostsApi.getAllPosts())
       .then(posts => dispatch(getPostsAction(posts)))
@@ -62,6 +73,8 @@ export const fetchPost = (dispatch, postId) => PostsApi.getPostById(postId)
 export const fetchComments = (dispatch, postId) => CommentsApi.getComments(postId)
       .then(comments => dispatch(getCommentsAction(comments)))
 
+export const fetchComment = (dispatch, commentId) => PostsApi.getCommentById(commentId)
+              .then( comment => dispatch(loadCommentByIdAction(comment)) )
 
 
 export const sortPostsByVoteAction = () => {

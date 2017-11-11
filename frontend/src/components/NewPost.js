@@ -6,52 +6,51 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router'
 
 class NewPost extends Component {
-  constructor(props) {
-    super(props)
+    constructor(props) {
+        super(props)
 
-    this.state = {
-      		post:
-            {
+        this.state = {
+            post: {
                 title: '',
                 body: '',
                 author: '',
-	              category:'react',
-                voteScore:'1',
-                commentCount:'1'
+                category: 'react'
             }
+        }
     }
-  }
 
 
-  onChange = (event) => {
+    onChange = (event) => {
         const state = this.state
         state.post[event.target.name] = event.target.value
         this.setState(state)
-      }
+    }
 
-onSubmit = (event) => {
+    onSubmit = (event) => {
         event.preventDefault()
         // get our form data out of state
-        const { post } = this.state
+        const {post} = this.state
 
-  		post['timestamp']=Date.now()
-  		post['id']=Date.now()
-        newPost(post).then((post)=>this.setState({redirect:true}))
-      }
+        post['timestamp'] = Date.now()
+        post['id'] = Date.now()
+        newPost(post).then((post) => this.setState({
+            redirect: true
+        }))
+    }
 
-render() {
+    render() {
 
-    const categoryReferer = (this.props.categoryReferer)?this.props.categoryReferer:''
+        const categoryReferer = (this.props.categoryReferer) ? this.props.categoryReferer : ''
 
-    if(this.state.redirect) {
-      return  <Redirect to={`/${categoryReferer}`} />
-     }
+        if (this.state.redirect) {
+            return <Redirect to={`/${categoryReferer}`} />
+        }
 
-  	const { categories} = this.props
-    const { title, body, author, category, voteScore } = this.state.post
+        const {categories} = this.props
+        const {title, body, author, category, voteScore} = this.state.post
 
-    	return (
-          <div >
+        return (
+            <div >
           <h2>New post</h2>
           <hr className="my-2" />
           <Form onSubmit={this.onSubmit}>
@@ -71,11 +70,10 @@ render() {
           <Label for="category">Category</Label>
           <Input type="select" name="category" id="category" value={category} onChange={this.onChange}>
           {
-          categories.map(category=>
-          (
-          <option key={category.name}>{category.name}</option>
-          ))
-          }
+            categories.map(category => (
+                <option key={category.name}>{category.name}</option>
+            ))
+            }
           </Input>
           </FormGroup>
 <FormGroup>
@@ -92,18 +90,18 @@ render() {
           <span className="right">
           <Link to={`/${categoryReferer}`}>
           <Button color="primary">Back</Button>
-          </Link>&nbsp;
+          </Link> 
           <Button color="primary">Save</Button></span>
-		</Form>
+    </Form>
 </div>
-  )
-}
+        )
+    }
 }
 
 const mapStateToProps = state => {
-  return {
-    categoryReferer: state.PostsReducer.categoryReferer
-  }
+    return {
+        categoryReferer: state.PostsReducer.categoryReferer
+    }
 }
 
 export default connect(mapStateToProps)(NewPost)

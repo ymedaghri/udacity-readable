@@ -8,55 +8,51 @@ import { updatePost } from '../services/PostsApi'
 import { Redirect } from 'react-router';
 
 class EditPost extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
+        this.state = {
+        }
     }
-  }
 
-  componentDidMount() {
-		const {
-			dispatchGetPostById
-		} = this.props
+    componentDidMount() {
+        const {dispatchGetPostById} = this.props
 
-		dispatchGetPostById(this.props.postId)
-	}
+        dispatchGetPostById(this.props.postId).then(action=>this.setState({ post: action.post }))
+    }
 
 
-  onChange = (event) => {
+    onChange = (event) => {
         const state = this.state
         state.post[event.target.name] = event.target.value;
-       this.setState(state);
-      }
+        this.setState(state);
+    }
 
-onSubmit = (event) => {
+    onSubmit = (event) => {
         event.preventDefault()
         // get our form data out of state
-        const { post } = this.state;
-        updatePost(post, this.props.post.id).then((post)=>{
-          fetchPosts()
-          this.setState({redirect:true})
+        const {post} = this.state;
+        updatePost(post, this.props.post.id).then((post) => {
+            this.props.dispatchFetchPosts(post.category)
+            this.setState({
+                redirect: true
+            })
         })
-      }
+    }
 
-render() {
+    render() {
 
-const categoryReferer = (this.props.categoryReferer)?this.props.categoryReferer:''
+        const categoryReferer = (this.props.categoryReferer) ? this.props.categoryReferer : ''
 
-  if(this.state.redirect) {
-    return  <Redirect to={`/${categoryReferer}`} />
-  }
+        if (this.state.redirect) {
+            return <Redirect to={`/${categoryReferer}`} />
+        }
 
-  	const { categories } = this.props
-	const propsPost = this.props.post
+        const {categories} = this.props
+        const {post} = this.state
 
-
-	if(!this.state.post && propsPost) this.setState({post:propsPost})
-	const { post } = this.state
-
-	return (post&&categories)?(
-          <div>
+        return (post && categories) ? (
+            <div>
           <h2>Details of post #{post.id}</h2>
           <hr className="my-2" />
          <Form onSubmit={this.onSubmit}>
@@ -76,14 +72,13 @@ const categoryReferer = (this.props.categoryReferer)?this.props.categoryReferer:
           <Label for="category">Category</Label>
           <Input type="select" name="category" id="category" value={post.category} onChange={this.onChange}>
           {
-          categories.map(category=>
-          (
-          <option key={category.name}>{category.name}</option>
-          ))
-          }
+            categories.map(category => (
+                <option key={category.name}>{category.name}</option>
+            ))
+            }
           </Input>
           </FormGroup>
-		  <FormGroup>
+      <FormGroup>
           <Label for="voteScore">Vote Score</Label>
           <Input type="select" name="voteScore" id="voteScore" value={post.voteScore} onChange={this.onChange}>
           <option>1</option>
@@ -97,29 +92,28 @@ const categoryReferer = (this.props.categoryReferer)?this.props.categoryReferer:
           <span className="right">
           <Link to={`/${categoryReferer}`}>
           <Button color="primary">Back</Button>
-          </Link>&nbsp;
+          </Link> 
           <Button color="primary">Save</Button></span>
           </Form>
       </div>
-  ):(<div><Loading delay={200} type='spin' color='#222' className='loading' /></div>
-        )
-}
+            ) : (<div><Loading delay={200} type='spin' color='#222' className='loading' /></div>
+            )
+    }
 }
 
 
 const mapStateToProps = state => {
-	return {
-		post: state.PostsReducer.post,
-    categoryReferer: state.PostsReducer.categoryReferer
-	}
+    return {
+        post: state.PostsReducer.post,
+        categoryReferer: state.PostsReducer.categoryReferer
+    }
 }
 
 const mapDispatchToProps = dispatch => {
-	return {
-		dispatchGetPostById: (postId) => {
-			fetchPost(dispatch, postId)
-		}
-	}
+    return {
+        dispatchGetPostById: (postId) => fetchPost(dispatch, postId),
+        dispatchFetchPosts: (category) => fetchPosts(dispatch, category)
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditPost);

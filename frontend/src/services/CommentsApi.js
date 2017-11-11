@@ -33,3 +33,16 @@ export const deleteComment = (id) =>
   }).then(res => res)
 
 }
+
+export const updateComment = (comment, commentId) =>
+  {
+    return fetch(`${Backend.url}/comments/${commentId}`, {
+    method: 'PUT',
+    headers:{
+      ...Backend.tokens.headers,
+      'Content-Type': 'application/json'
+    },
+    credentials:'include',
+    body: JSON.stringify( comment )
+  }).then(res => res.json())
+}
