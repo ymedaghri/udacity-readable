@@ -44,8 +44,8 @@ onSubmit = (event) => {
         const { comment } = this.state;
 
   		comment['timestamp']=Date.now()
-  		comment['id']=Date.now()
-		comment['parentId']=this.props.post.id
+  		comment['id']=''+Date.now()
+		comment['parentId']=''+this.props.post.id
         newComment(comment).then((comment)=>this.setState({redirect:true}))
       }
 
