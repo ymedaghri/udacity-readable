@@ -21,17 +21,6 @@ const defaultData = {
     body: 'Just kidding. It takes more than 10 minutes to learn technology.',
     author: 'thingone',
     category: 'redux',
-    voteScore: -3,
-    deleted: false,
-    commentCount: 0
-  },
-  "7ni6ok3ym7mf1p33lnez": {
-    id: '7ni6ok3ym7mf1p33lnez',
-    timestamp: 1469479767194,
-    title: 'Learn Java in 10 minutes!',
-    body: 'Just kidding. It takes more than 10 minutes to learn Java technology.',
-    author: 'JavaOne',
-    category: 'redux',
     voteScore: -5,
     deleted: false,
     commentCount: 0
@@ -59,7 +48,7 @@ function get (token, id) {
   return new Promise((res) => {
     const posts = getData(token)
     res(
-      posts[id].deleted 
+      posts[id].deleted
         ? {}
         : posts[id]
     )
@@ -70,7 +59,7 @@ function getAll (token) {
   return new Promise((res) => {
     const posts = getData(token)
     let keys = Object.keys(posts)
-    let filtered_keys = keys.filter(key => !posts.deleted)
+    let filtered_keys = keys.filter(key => !posts[key].deleted)
     res(filtered_keys.map(key => posts[key]))
   })
 }
@@ -78,7 +67,7 @@ function getAll (token) {
 function add (token, post) {
   return new Promise((res) => {
     let posts = getData(token)
-    
+
     posts[post.id] = {
       id: post.id,
       timestamp: post.timestamp,
@@ -87,9 +76,10 @@ function add (token, post) {
       author: post.author,
       category: post.category,
       voteScore: 1,
-      deleted: false
+      deleted: false,
+      commentCount: 0
     }
-     
+
     res(posts[post.id])
   })
 }
@@ -136,7 +126,7 @@ function incrementCommentCounter(token, id, count) {
     data[id].commentCount += count
   }
 }
- 
+
 module.exports = {
   get,
   getAll,
