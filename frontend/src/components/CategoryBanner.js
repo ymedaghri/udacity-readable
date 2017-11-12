@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { Row, Col, Card, CardTitle } from 'reactstrap'
 import Loading from 'react-loading'
-import { fetchPosts, storeCategoryReferer } from '../reducers/PostsReducer'
+import { fetchPosts } from '../reducers/PostsReducer'
+import { storeCategoryRefererAction } from '../reducers/PostsActions'
 import { connect } from 'react-redux';
 
 
@@ -45,7 +46,7 @@ const mapDispatchToProps = dispatch => {
 	return {
 		dispatchGetPosts: (category) => {
 			fetchPosts(dispatch, category)
-			dispatch(storeCategoryReferer(category))
+			dispatch(storeCategoryRefererAction(category))
 		}
 	}
 }

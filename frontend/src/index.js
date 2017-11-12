@@ -11,7 +11,7 @@ import logger from 'redux-logger'
 import thunk from 'redux-thunk'
 import 'bootstrap/dist/css/bootstrap.css'
 
-const store = createStore(reducers, applyMiddleware(logger), applyMiddleware(thunk));
+const store = createStore(reducers, applyMiddleware(logger, thunk));
 
 ReactDOM.render(
   <Provider store={store}><BrowserRouter><Route path="/:filter?" component={App} /></BrowserRouter></Provider>, document.getElementById('root'));

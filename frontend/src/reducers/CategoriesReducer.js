@@ -1,8 +1,10 @@
 import * as CategoriesApi from '../services/CategoriesApi'
-import { LOAD_CATEGORIES } from '../actions'
+import { LOAD_CATEGORIES } from './actionTypes'
+import * as CategoriesActions from './CategoriesActions'
+
 
 export const CategoriesReducer = (state={}, action) => {
-	const { categories } = action
+  const { categories } = action
   switch (action.type) {
       case LOAD_CATEGORIES :
       return categories
@@ -10,14 +12,8 @@ export const CategoriesReducer = (state={}, action) => {
       return state
   }
 }
-export const getCategoriesAction = (categories) => {
-  return {
-    type: LOAD_CATEGORIES,
-    categories
-  }
-}
 
 export const fetchCategories = (dispatch) => (
   CategoriesApi.getAllCategories()
-      .then(categories => dispatch(getCategoriesAction({categories})))
+      .then(categories => dispatch(CategoriesActions.loadCategoriesAction({categories})))
 )

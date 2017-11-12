@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import { sortPostsByTimestampAction } from '../reducers/PostsReducer'
+import { sortPostsByTimestampAction } from '../reducers/PostsActions'
 import { connect } from 'react-redux';
 
 class SortByTimestampButton extends Component {

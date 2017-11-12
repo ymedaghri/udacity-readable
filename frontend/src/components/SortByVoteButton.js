@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button } from 'reactstrap';
-import { sortPostsByVoteAction } from '../reducers/PostsReducer'
+import { sortPostsByVoteAction } from '../reducers/PostsActions'
 import { connect } from 'react-redux';
 
 class SortByVoteButton extends Component {

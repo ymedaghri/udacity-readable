@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React  from 'react';
 import { connect } from 'react-redux'
 import { Switch, Route } from 'react-router-dom'
 import Header from './components/Header'
@@ -6,10 +6,8 @@ import Main from './components/Main'
 import './App.css';
 
 
-class App extends Component {
+const App = function(props) {
 
-
-  render() {
     return (
       <div>
       	<div className="main-wrapper">
@@ -21,6 +19,5 @@ class App extends Component {
 	  </div>
     )
   }
-}
 
 export default connect()(App)

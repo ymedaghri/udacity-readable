@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import FaArrowLeft from 'react-icons/lib/fa/arrow-left'
 import { Link } from 'react-router-dom'
 import { Form, Button, FormGroup, Label, Input } from 'reactstrap'
-import { newComment } from '../services/CommentsApi'
 import { Redirect } from 'react-router';
 import { fetchPost, fetchComments, fetchComment } from '../reducers/PostsReducer'
 import { connect } from 'react-redux';
