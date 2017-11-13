@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
-import { Button } from 'reactstrap';
+import React, { Component } from 'react'
+import { Button } from 'reactstrap'
 import { sortPostsByTimestampAction } from '../reducers/PostsActions'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
+import FaSortAsc from 'react-icons/lib/fa/sort-asc'
+import FaSortDesc from 'react-icons/lib/fa/sort-desc'
 
 class SortByTimestampButton extends Component {
 
