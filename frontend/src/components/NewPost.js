@@ -14,7 +14,8 @@ class NewPost extends Component {
                 title: '',
                 body: '',
                 author: '',
-                category: 'react'
+                category: 'react',
+                voteScore: 1
             }
         }
     }

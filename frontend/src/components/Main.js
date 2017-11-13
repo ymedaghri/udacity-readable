@@ -10,7 +10,13 @@ import ViewPost from './ViewPost'
 import NewComment from './NewComment'
 import NewPost from './NewPost'
 import EditComment from './EditComment'
+import { Redirect } from 'react-router';
 
+const NotFound = () => (
+  <div>
+    <h3>404 page not found</h3>
+    <p>We are sorry but the page you are looking for does not exist.</p>
+  </div>)
 
 class Main extends Component {
     componentDidMount() {
@@ -26,7 +32,11 @@ class Main extends Component {
 
             <Switch>
 
+
+              <Route exact path="/404.html" component={NotFound} />
+
               <Route exact path="/" render={(props) => (
+
                 <div>
                   <CategoryBanner categories={categories} />
                   <br/>
@@ -35,6 +45,9 @@ class Main extends Component {
 
               <Route exact path="/:categoryName" render={(props) => (
                 <div>
+                {(()=> {
+                           if(categories && categories.filter((c)=>c.name===props.match.params.categoryName).length===0) return <Redirect to={'/404.html'}/>
+                          })()}
                   <CategoryBanner categories={categories} categoryName={props.match.params.categoryName} />
                   <br/>
                   <Posts categoryName={props.match.params.categoryName} />
@@ -72,6 +85,9 @@ class Main extends Component {
                   <br/>
                   <EditComment commentId={props.match.params.commentId} postId={props.match.params.postId} categories={categories} />
                 </div> )} />
+
+
+                <Route path="*" component={NotFound} />
 
             </Switch>
           </Jumbotron>

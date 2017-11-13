@@ -6,7 +6,6 @@ import { fetchPosts } from '../reducers/PostsReducer'
 import { storeCategoryRefererAction } from '../reducers/PostsActions'
 import { connect } from 'react-redux';
 
-
 class CategoryBanner extends Component {
 
 render() {

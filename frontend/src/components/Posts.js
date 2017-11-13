@@ -28,7 +28,7 @@ const mapStateToProps = state => state
 const mapDispatchToProps = dispatch => {
     return {
         dispatchGetPosts: (category) => {
-            fetchPosts(dispatch, category)
+            return fetchPosts(dispatch, category)
         }
 
     }

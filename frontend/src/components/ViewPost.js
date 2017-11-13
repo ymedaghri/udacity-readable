@@ -10,6 +10,9 @@ import Loading from 'react-loading'
 import { upVoteComment } from '../services/PostsApi'
 import { downVoteComment } from '../services/PostsApi'
 import FaMinus from 'react-icons/lib/fa/minus'
+import SortCommentsByVoteButton from './SortCommentsByVoteButton'
+import SortCommentsByTimestampButton from './SortCommentsByTimestampButton'
+import { Redirect } from 'react-router';
 
 class ViewPost extends Component {
     componentDidMount() {
@@ -19,8 +22,14 @@ class ViewPost extends Component {
     }
 
     render() {
-        const {post, comments} = this.props
+        const {sortCommentsByVote, sortCommentsByTimestamp, sortCommentsByVoteDirection, sortCommentsByTimestampDirection, post, comments} = this.props
+        const eventuallySortedComments = (sortCommentsByVote === true) ? sortByVote(comments, sortCommentsByVoteDirection) : (sortCommentsByTimestamp === true) ? sortByTimestamp(comments, sortCommentsByTimestampDirection) : comments
+
         const categoryReferer = (this.props.categoryReferer) ? this.props.categoryReferer : ''
+
+        if (post && post.error) {
+            return <Redirect to={'/404.html'} />
+        }
 
         return (post) ? (
             <div>
@@ -85,15 +94,16 @@ class ViewPost extends Component {
                     <h2>Comments ({post.commentCount})</h2>
                     <hr className="my-2" />
                     <ListGroup>
-                      <ListGroupItem>
-                        <span className="right">
-                          <Link to={`/${post.category}/${post.id}/new-comment`}>
-                            <Button color="primary" size="sm">Add a new Comment <FaPlus/></Button>
-                          </Link>
-                        </span>
-                      </ListGroupItem>
+                      <ListGroupItem action>
+                          <SortCommentsByVoteButton/> <SortCommentsByTimestampButton/>
+                            <span className="right">
+                              <Link to={`/${post.category}/${post.id}/new-comment`}>
+                                <Button color="primary" size="sm">Add a new Comment <FaPlus/></Button>
+                              </Link>
+                            </span>
+                    </ListGroupItem>
                       {
-                comments.map((comment) => (
+                eventuallySortedComments.map((comment) => (
                     <ListGroupItem key={comment.id}>
                               <ListGroupItemHeading>
                                 <Badge pill>vote score : {comment.voteScore}</Badge>
@@ -140,6 +150,13 @@ class ViewPost extends Component {
 }
 
 
+function sortByVote(comments, direction) {
+    return comments.slice().sort((p1, p2) => (direction==='asc')?(p1.voteScore - p2.voteScore):(p2.voteScore - p1.voteScore));
+}
+
+function sortByTimestamp(comments, direction) {
+    return comments.slice().sort((p1, p2) => (direction==='asc')?(p1.timestamp - p2.timestamp):(p2.timestamp - p1.timestamp));
+}
 
 function upVoteClick(comment, stateContext) {
     upVoteComment(comment.id).then((updatedComment) => {
@@ -157,6 +174,10 @@ function downVoteClick(comment, stateContext) {
 
 const mapStateToProps = state => {
     return {
+        sortCommentsByTimestamp: state.PostsReducer.sortCommentsByTimestamp,
+        sortCommentsByVote: state.PostsReducer.sortCommentsByVote,
+        sortCommentsByVoteDirection: state.PostsReducer.sortCommentsByVoteDirection,
+        sortCommentsByTimestampDirection: state.PostsReducer.sortCommentsByTimestampDirection,
         post: state.PostsReducer.post,
         categoryReferer: state.PostsReducer.categoryReferer,
         comments: state.PostsReducer.comments

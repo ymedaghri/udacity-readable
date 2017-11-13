@@ -10,8 +10,8 @@ import FaMinus from 'react-icons/lib/fa/minus'
 import DeletePostButtonWithPrompt from './DeletePostButtonWithPrompt'
 import { connect } from 'react-redux';
 import Loading from 'react-loading'
-import SortByVoteButton from './SortByVoteButton'
-import SortByTimestampButton from './SortByTimestampButton'
+import SortPostsByVoteButton from './SortPostsByVoteButton'
+import SortPostsByTimestampButton from './SortPostsByTimestampButton'
 import AddNewPostButton from './AddNewPostButton'
 import { fetchPosts } from '../reducers/PostsReducer'
 
@@ -19,13 +19,13 @@ class PostsTable extends Component {
 
     render() {
 
-        const {sortPostsByVote, sortPostsByTimestamp, posts} = this.props
-        const eventuallySortedPosts = (sortPostsByVote === true) ? sortByVote(posts) : (sortPostsByTimestamp === true) ? sortByTimestamp(posts) : posts
+        const {sortPostsByVote, sortPostsByTimestamp, sortPostsByVoteDirection, sortPostsByTimestampDirection, posts} = this.props
+        const eventuallySortedPosts = (sortPostsByVote === true) ? sortByVote(posts, sortPostsByVoteDirection) : (sortPostsByTimestamp === true) ? sortByTimestamp(posts, sortPostsByTimestampDirection) : posts
 
         return (posts) ? (
             <ListGroup>
 				        		<ListGroupItem action>
-				        			<SortByVoteButton/> <SortByTimestampButton/>
+				        			<SortPostsByVoteButton/> <SortPostsByTimestampButton/>
 				        				<span className="right">
 				        					<AddNewPostButton/>
 				        				</span>
@@ -92,19 +92,20 @@ function downVoteClick(post, stateContext) {
     })
 }
 
-function sortByVote(posts) {
-    return posts.slice().sort((p1, p2) => p1.voteScore - p2.voteScore);
+function sortByVote(posts, direction) {
+    return posts.slice().sort((p1, p2) => (direction==='asc')?(p1.voteScore - p2.voteScore):(p2.voteScore - p1.voteScore));
 }
 
-function sortByTimestamp(posts) {
-    return posts.slice().sort((p1, p2) => p2.timestamp - p1.timestamp
-    )
+function sortByTimestamp(posts, direction) {
+    return posts.slice().sort((p1, p2) => (direction==='asc')?(p1.timestamp - p2.timestamp):(p2.timestamp - p1.timestamp));
 }
 
 const mapStateToProps = state => {
     return {
         sortPostsByTimestamp: state.PostsReducer.sortPostsByTimestamp,
         sortPostsByVote: state.PostsReducer.sortPostsByVote,
+        sortPostsByVoteDirection: state.PostsReducer.sortPostsByVoteDirection,
+        sortPostsByTimestampDirection: state.PostsReducer.sortPostsByTimestampDirection,
         posts: state.PostsReducer.posts
     }
 }

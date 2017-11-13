@@ -43,13 +43,18 @@ class EditPost extends Component {
     render() {
 
         const categoryReferer = (this.props.categoryReferer) ? this.props.categoryReferer : ''
+        const {categories} = this.props
+        const {post} = this.state
+
+        if (post && post.error) {
+            return <Redirect to={'/404.html'} />
+        }
 
         if (this.state.redirect) {
             return <Redirect to={`/${categoryReferer}`} />
         }
 
-        const {categories} = this.props
-        const {post} = this.state
+
 
         return (post && categories) ? (
             <div>
